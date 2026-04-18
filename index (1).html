@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Mom's Garden Walk Tracker</title>
+  <meta name="description" content="A simple tracker for daily garden walks with GPS verification and progress dashboard." />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- SETUP SCREEN -->
+  <main id="setup-screen" class="screen hidden">
+    <div class="card setup-card">
+      <div class="setup-header">
+        <div class="icon-circle">🌱</div>
+        <div>
+          <h1>Set the garden location</h1>
+          <p class="muted">We'll check you're here before counting a walk.</p>
+        </div>
+      </div>
+
+      <button id="use-current-btn" class="btn btn-primary btn-lg">
+        📍 Use my current location
+      </button>
+
+      <div class="field">
+        <label for="link-input">Or paste a Google Maps link / coordinates</label>
+        <div class="row">
+          <input id="link-input" type="text" placeholder="e.g. 37.7749,-122.4194" />
+          <button id="link-btn" class="btn btn-secondary">Use</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Or pick on the map (tap to drop a pin)</label>
+        <div id="setup-map" class="map"></div>
+        <p id="coords-display" class="muted small"></p>
+      </div>
+
+      <div class="field">
+        <div class="row-between">
+          <label for="tolerance">Allowed distance from pin</label>
+          <span id="tolerance-value" class="primary-text">5 m</span>
+        </div>
+        <input id="tolerance" type="range" min="5" max="30" step="1" value="5" />
+        <p class="muted small">GPS isn't perfect — try 10–15m if 5m feels too strict.</p>
+      </div>
+
+      <div class="row">
+        <button id="setup-cancel-btn" class="btn btn-outline hidden" style="flex:1;">Cancel</button>
+        <button id="setup-save-btn" class="btn btn-primary" style="flex:1;">Save location</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MAIN APP -->
+  <main id="app-screen" class="screen hidden">
+    <header class="app-header">
+      <div class="brand">
+        <div class="icon-circle small">🌱</div>
+        <div>
+          <h1>Garden Walk Tracker</h1>
+          <p class="muted small">A walk a day 🌿</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="export-btn" class="icon-btn" title="Export data" aria-label="Export data">⬇️</button>
+        <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">⚙️</button>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="stats-grid" aria-label="Walk statistics">
+      <div class="card stat"><div class="stat-icon">🔥</div><div><p class="muted small">Current streak</p><p class="stat-value" id="stat-current">0<span class="suffix">d</span></p></div></div>
+      <div class="card stat"><div class="stat-icon">🏆</div><div><p class="muted small">Longest streak</p><p class="stat-value" id="stat-longest">0<span class="suffix">d</span></p></div></div>
+      <div class="card stat"><div class="stat-icon">👣</div><div><p class="muted small">Total walks</p><p class="stat-value" id="stat-total">0</p></div></div>
+      <div class="card stat"><div class="stat-icon">📅</div><div><p class="muted small">This month</p><p class="stat-value" id="stat-month">0</p></div></div>
+      <div class="card stat"><div class="stat-icon">📈</div><div><p class="muted small">Consistency</p><p class="stat-value" id="stat-consistency">0<span class="suffix">%</span></p></div></div>
+    </section>
+
+    <section class="card">
+      <div class="row-between mb-3">
+        <h2 class="section-title">Last 14 days</h2>
+        <span class="muted small">Today →</span>
+      </div>
+      <div id="last14" class="last14"></div>
+    </section>
+
+    <!-- MARK WALK BUTTON -->
+    <section id="mark-section" class="card mark-card">
+      <p class="muted small mb-2">Ready when you are</p>
+      <button id="mark-btn" class="btn btn-primary btn-xl">
+        <span id="mark-btn-text">👣 Mark today's walk</span>
+      </button>
+      <p class="muted small mt-2">We'll verify you're in the garden via GPS</p>
+      <div id="celebration" class="celebration hidden">
+        <span class="leaf l1">🌿</span>
+        <span class="leaf l2">🍃</span>
+        <span class="leaf l3">🌱</span>
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="card">
+      <div class="row-between mb-3">
+        <button id="prev-month" class="icon-btn" aria-label="Previous month">‹</button>
+        <h2 id="month-label" class="section-title"></h2>
+        <button id="next-month" class="icon-btn" aria-label="Next month">›</button>
+      </div>
+      <div class="weekday-row">
+        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
+      <div id="day-detail" class="day-detail hidden"></div>
+    </section>
+  </main>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
